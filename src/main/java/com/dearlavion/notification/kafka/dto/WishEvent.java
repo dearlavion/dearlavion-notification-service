@@ -1,4 +1,4 @@
-package org.example.kafka.dto;
+package com.dearlavion.notification.kafka.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

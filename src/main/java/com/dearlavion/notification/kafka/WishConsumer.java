@@ -1,8 +1,8 @@
-package org.example.kafka;
+package com.dearlavion.notification.kafka;
 
+import com.dearlavion.notification.email.EmailService;
+import com.dearlavion.notification.kafka.dto.WishEvent;
 import lombok.RequiredArgsConstructor;
-import org.example.email.EmailService;
-import org.example.kafka.dto.WishEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 

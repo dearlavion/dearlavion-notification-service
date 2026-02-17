@@ -1,4 +1,4 @@
-package org.example.email;
+package com.dearlavion.notification.email;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
