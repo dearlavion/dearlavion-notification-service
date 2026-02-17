@@ -1,5 +1,6 @@
 package com.dearlavion.notification.kafka;
 
+import com.dearlavion.notification.channels.ChannelService;
 import com.dearlavion.notification.email.EmailService;
 import com.dearlavion.notification.kafka.dto.WishEvent;
 import com.dearlavion.notification.subscription.SubscriptionMatcherService;
@@ -15,6 +16,7 @@ import java.util.List;
 public class WishConsumer {
     private final SubscriptionMatcherService matcherService;
     private final EmailService emailService;
+    private final ChannelService channelService;
 
     @KafkaListener(topics = "wish-event", groupId = "dearlavion-notification-group")
     public void consume(WishEvent wishEvent) {
@@ -26,9 +28,7 @@ public class WishConsumer {
 
         // 2️⃣ Send notifications
         for (CopilotSubscription sub : matches) {
-            //notificationService.send(sub, wishEvent);
-            emailService.sendWelcomeEmail("ayamalysson@gmail.com", "DEAR");
-
+            channelService.send(sub, wishEvent);
         }
     }
 }
