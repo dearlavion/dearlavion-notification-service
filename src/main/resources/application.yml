@@ -7,7 +7,6 @@ spring:
       connect-timeout: 10000
   kafka:
     bootstrap-servers: localhost:29092
-
     consumer:
       group-id: dearlavion-notification-group
       auto-offset-reset: earliest
@@ -19,7 +18,26 @@ spring:
         spring.json.trusted.packages: "*"
         spring.json.use.type.headers: false
         spring.json.value.default.type: org.example.kafka.dto.WishEvent
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dearlavion@gmail.com
+    password: zplbgfewlboykxlp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
 
 server:
   port: 8083
   address: 0.0.0.0
+
+logging:
+  level:
+    org.springframework.mail: DEBUG
+    jakarta.mail: DEBUG
