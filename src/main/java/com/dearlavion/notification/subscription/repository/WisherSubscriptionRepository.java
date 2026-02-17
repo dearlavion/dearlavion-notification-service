@@ -8,5 +8,11 @@ import java.util.List;
 public interface WisherSubscriptionRepository
         extends MongoRepository<WisherSubscription, String> {
     List<WisherSubscription> findByUserId(String userId);
+
+    List<WisherSubscription> findByCountryAndCityAndIsActive(
+            String country,
+            String city,
+            Boolean isActive
+    );
 }
 

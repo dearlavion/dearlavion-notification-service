@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class CopilotSubscription extends BaseSubscription {
 
     private List<String> categories;
 
-    private Map<String, Object> filters;
+    private BigDecimal minAmount;
 
     private Boolean isPaid;
     //init block for default type

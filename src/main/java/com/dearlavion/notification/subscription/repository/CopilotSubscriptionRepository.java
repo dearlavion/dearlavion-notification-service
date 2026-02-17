@@ -8,5 +8,11 @@ import java.util.List;
 public interface CopilotSubscriptionRepository
         extends MongoRepository<CopilotSubscription, String> {
     List<CopilotSubscription> findByUserId(String userId);
+
+    List<CopilotSubscription> findByCountryAndCityAndIsActive(
+            String country,
+            String city,
+            Boolean isActive
+    );
 }
 
