@@ -21,8 +21,8 @@ public class CopilotSubscription extends BaseSubscription {
 
     private String coverageType;
 
-    private String country;
-    private String city;
+    private String countryCode;
+    private String cityName;
 
     @GeoSpatialIndexed
     private GeoJsonPoint centerLocation;
@@ -30,8 +30,6 @@ public class CopilotSubscription extends BaseSubscription {
     private Double radiusKm;
 
     private List<String> categories;
-
-    private BigDecimal minAmount;
 
     private Boolean isPaid;
     //init block for default type

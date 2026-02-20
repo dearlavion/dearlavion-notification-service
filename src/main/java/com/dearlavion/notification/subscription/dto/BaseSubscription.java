@@ -3,6 +3,7 @@ package com.dearlavion.notification.subscription.dto;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
 
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -14,12 +15,14 @@ public abstract class BaseSubscription {
 
     private SubscriptionType type;
 
-    private String userId; // copilotId or wisherId
+    private String username;
 
     private List<String> notificationChannels;
 
     private Boolean isActive;
 
     private Instant createdAt;
+
+    private BigDecimal minAmount;
 }
 

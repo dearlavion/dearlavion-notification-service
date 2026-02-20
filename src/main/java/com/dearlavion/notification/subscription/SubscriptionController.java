@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/subscriptions")
+@RequestMapping("/notification/subscription")
 @RequiredArgsConstructor
 public class SubscriptionController {
 
@@ -34,9 +34,9 @@ public class SubscriptionController {
         return service.findById(id, type);
     }
 
-    @GetMapping("/user/{userId}")
-    public List<?> findByUserId(@PathVariable String userId, @RequestParam SubscriptionType type) {
-        return service.findByUserId(userId, type);
+    @GetMapping("/user/{username}")
+    public List<?> findByUsername(@PathVariable String username, @RequestParam SubscriptionType type) {
+        return service.findByUsername(username, type);
     }
 }
 

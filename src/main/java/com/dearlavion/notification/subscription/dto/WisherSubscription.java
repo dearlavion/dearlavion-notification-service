@@ -15,8 +15,8 @@ import java.util.List;
 @Document(collection = "wisher_subscriptions")
 public class WisherSubscription extends BaseSubscription {
 
-    private String country;
-    private String city;
+    private String countryCode;
+    private String cityName;
 
     private List<String> categories;
 

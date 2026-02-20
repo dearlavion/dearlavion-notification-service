@@ -37,6 +37,10 @@ server:
   port: 8083
   address: 0.0.0.0
 
+auth:
+  server:
+    url: http://localhost:8081
+
 logging:
   level:
     org.springframework.mail: DEBUG

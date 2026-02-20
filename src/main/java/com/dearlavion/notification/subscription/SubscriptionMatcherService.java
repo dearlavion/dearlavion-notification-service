@@ -17,7 +17,7 @@ public class SubscriptionMatcherService {
 
     public List<CopilotSubscription> match(WishEvent wish) {
         // Step 1: Get all active subscriptions in same country & city
-        List<CopilotSubscription> subs = copilotRepo.findByCountryAndCityAndIsActive(
+        List<CopilotSubscription> subs = copilotRepo.findByCountryCodeAndCityNameAndIsActive(
                 wish.getCountryCode(), wish.getCityName(), true
         );
 

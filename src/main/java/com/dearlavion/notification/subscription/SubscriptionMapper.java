@@ -8,8 +8,14 @@ import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface SubscriptionMapper {
+
     CopilotSubscription toCopilot(SubscriptionDTO dto);
+
     WisherSubscription toWisher(SubscriptionDTO dto);
-    void updateCopilot(@MappingTarget CopilotSubscription sub, SubscriptionDTO dto);
-    void updateWisher(@MappingTarget WisherSubscription sub, SubscriptionDTO dto);
+
+    void updateCopilot(SubscriptionDTO dto,
+                       @MappingTarget CopilotSubscription sub);
+
+    void updateWisher(SubscriptionDTO dto,
+                      @MappingTarget WisherSubscription sub);
 }

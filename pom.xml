@@ -19,12 +19,13 @@
 
     <properties>
         <java.version>21</java.version>
-        <maven.compiler.source>21</maven.compiler.source>
-        <maven.compiler.target>21</maven.compiler.target>
+        <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <lombok.version>1.18.30</lombok.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
+
         <!-- Spring Boot Starters -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -56,18 +57,27 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- ModelMapper (optional, if you need it for other DTO mapping) -->
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.2.0</version>
-        </dependency>
-
         <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <version>${lombok.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- MapStruct API -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${mapstruct.version}</version>
+        </dependency>
+
+        <!-- Lombok ↔ MapStruct binding (CRITICAL FIX) -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok-mapstruct-binding</artifactId>
+            <version>0.2.0</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Testing -->
@@ -77,30 +87,18 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- MapStruct -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.5.Final</version>
-            <scope>provided</scope>
-        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- Spring Boot plugin -->
+
+            <!-- Spring Boot Plugin -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
 
-            <!-- Compiler plugin with annotation processing for MapStruct -->
+            <!-- Compiler Plugin -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -108,20 +106,34 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
+
                     <annotationProcessorPaths>
+
+                        <!-- MapStruct Processor -->
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
-                            <version>1.5.5.Final</version>
+                            <version>${mapstruct.version}</version>
                         </path>
+
+                        <!-- Lombok -->
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.30</version>
+                            <version>${lombok.version}</version>
                         </path>
+
+                        <!-- Lombok MapStruct Binding -->
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok-mapstruct-binding</artifactId>
+                            <version>0.2.0</version>
+                        </path>
+
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>
+
         </plugins>
     </build>
 

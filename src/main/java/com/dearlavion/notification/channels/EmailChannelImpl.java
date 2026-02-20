@@ -19,7 +19,7 @@ public class EmailChannelImpl implements ChannelService {
 
     @Override
     public void send(CopilotSubscription sub, WishEvent wish) {
-        String to = sub.getUserId(); // lookup email later
+        String to = sub.getUsername(); // lookup email later
 
         String subject = "New Wish in " + wish.getCityName();
 

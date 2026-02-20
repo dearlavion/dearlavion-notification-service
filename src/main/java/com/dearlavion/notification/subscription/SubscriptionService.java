@@ -36,13 +36,13 @@ public class SubscriptionService {
             case COPILOT -> {
                 CopilotSubscription sub = copilotRepo.findById(id)
                         .orElseThrow(() -> new RuntimeException("Copilot subscription not found"));
-                mapper.updateCopilot(sub, dto);
+                mapper.updateCopilot(dto, sub);
                 yield copilotRepo.save(sub);
             }
             case WISHER -> {
                 WisherSubscription sub = wisherRepo.findById(id)
                         .orElseThrow(() -> new RuntimeException("Wisher subscription not found"));
-                mapper.updateWisher(sub, dto);
+                mapper.updateWisher(dto, sub);
                 yield wisherRepo.save(sub);
             }
         };
@@ -67,10 +67,10 @@ public class SubscriptionService {
     }
 
     // FIND BY USERID
-    public List<?> findByUserId(String userId, SubscriptionType type) {
+    public List<?> findByUsername(String username, SubscriptionType type) {
         return switch (type) {
-            case COPILOT -> copilotRepo.findByUserId(userId);
-            case WISHER -> wisherRepo.findByUserId(userId);
+            case COPILOT -> copilotRepo.findByUsername(username);
+            case WISHER -> wisherRepo.findByUsername(username);
         };
     }
 }
