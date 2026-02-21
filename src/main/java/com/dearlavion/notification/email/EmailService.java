@@ -26,11 +26,11 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    public void sendEmail(String toEmail, String subject, String body) {
+    public void sendEmail(String sender, String receiver, String subject, String body) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("dearlavion@gmail.com");
-        message.setTo(toEmail);
+        message.setFrom(sender);
+        message.setTo(receiver);
         message.setSubject(subject);
         message.setText(body);
 

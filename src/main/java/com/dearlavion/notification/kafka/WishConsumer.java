@@ -27,8 +27,8 @@ public class WishConsumer {
         List<CopilotSubscription> matches = matcherService.match(wishEvent);
 
         // 2️⃣ Send notifications
-        for (CopilotSubscription sub : matches) {
-            channelService.send(sub, wishEvent);
+        for (CopilotSubscription subscriber : matches) {
+            channelService.send(subscriber, wishEvent);
         }
     }
 }

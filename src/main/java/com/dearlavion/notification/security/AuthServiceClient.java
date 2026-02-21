@@ -13,16 +13,13 @@ public class AuthServiceClient {
 
     private static final Logger log = LoggerFactory.getLogger(AuthServiceClient.class);
 
-    // Keep direct instantiation of RestTemplate
     private final RestTemplate restTemplate = new RestTemplate();
 
-    // Inject URL from application.yml or environment
     @Value("${auth.server.url}")
     private String authServiceUrl;
 
     public AuthVerificationResponse verify(String token) {
-        String url = authServiceUrl + "/auth/verify"; // append endpoint
-        log.info("Calling auth service at URL: {}", url);
+        String url = authServiceUrl + "/auth/verify";
 
         try {
             return restTemplate.postForObject(
@@ -33,6 +30,20 @@ public class AuthServiceClient {
         } catch (Exception e) {
             log.error("Failed to call auth service at URL: {}", url, e);
             return null; // token invalid or service unavailable
+        }
+    }
+
+    public UserDto getUserDetails(String username) {
+        String url = authServiceUrl + "/auth/user/" + username;
+
+        try {
+            return restTemplate.getForObject(
+                    url,
+                    UserDto.class
+            );
+        } catch (Exception e) {
+            log.error("Failed to fetch user details at URL: {}", url, e);
+            return null;
         }
     }
 }

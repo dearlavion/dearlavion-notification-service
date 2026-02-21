@@ -37,11 +37,11 @@ public class SubscriptionMatcherService {
                 .collect(Collectors.toList());
 
         // Step 3: Filter by categories
-        subs = subs.stream()
+        /*subs = subs.stream()
                 .filter(sub -> sub.getCategories() == null || sub.getCategories().isEmpty() ||
                         wish.getCategories().stream().anyMatch(sub.getCategories()::contains)
                 )
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
 
         // Step 4: Filter by minimum amount
         subs = subs.stream()
