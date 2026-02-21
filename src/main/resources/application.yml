@@ -35,6 +35,8 @@ spring:
 
 email:
   sender: dearlavion@gmail.com
+  wish:
+    url: http://localhost:4200/wish/
 
 server:
   port: 8083
