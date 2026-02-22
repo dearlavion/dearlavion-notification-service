@@ -38,6 +38,15 @@ public class SubscriptionController {
     public List<?> findByUsername(@PathVariable String username, @RequestParam SubscriptionType type) {
         return service.findByUsername(username, type);
     }
+
+    @PatchMapping("/{id}")
+    public Object patch(
+            @PathVariable String id,
+            @RequestParam SubscriptionType type,
+            @RequestBody SubscriptionDTO dto
+    ) {
+        return service.patch(id, type, dto);
+    }
 }
 
 

@@ -73,4 +73,33 @@ public class SubscriptionService {
             case WISHER -> wisherRepo.findByUsername(username);
         };
     }
+
+    public Object patch(String id, SubscriptionType type, SubscriptionDTO dto) {
+        return switch (type) {
+            case COPILOT -> {
+                CopilotSubscription sub = copilotRepo.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Copilot subscription not found"));
+
+                applyPatchToCopilot(dto, sub);
+                yield copilotRepo.save(sub);
+            }
+            case WISHER -> {
+                WisherSubscription sub = wisherRepo.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Wisher subscription not found"));
+
+                applyPatchToWisher(dto, sub);
+                yield wisherRepo.save(sub);
+            }
+        };
+    }
+
+    private void applyPatchToCopilot(SubscriptionDTO dto, CopilotSubscription sub) {
+        if (dto.getIsActive() != null)
+            sub.setIsActive(dto.getIsActive());
+    }
+
+    private void applyPatchToWisher(SubscriptionDTO dto, WisherSubscription sub) {
+        if (dto.getIsActive() != null)
+            sub.setIsActive(dto.getIsActive());
+    }
 }
