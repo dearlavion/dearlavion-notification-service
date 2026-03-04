@@ -17,7 +17,7 @@ spring:
       properties:
         spring.json.trusted.packages: "*"
         spring.json.use.type.headers: false
-        spring.json.value.default.type: com.dearlavion.notification.kafka.dto.CoreServiceEvent
+        spring.json.value.default.type: com.dearlavion.notification.kafka.dto.KafkaEvent
   mail:
     host: smtp.gmail.com
     port: 587
@@ -35,8 +35,8 @@ spring:
 
 email:
   sender: dearlavion@gmail.com
-  wish:
-    url: http://localhost:4200/wish/
+  frontend:
+    url: http://localhost:4200/
 
 server:
   port: 8083

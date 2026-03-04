@@ -5,7 +5,5 @@ import com.dearlavion.notification.subscription.dto.CopilotSubscription;
 
 public interface ChannelService {
     String getChannel(); // EMAIL, SMS, etc.
-
-    void send(CopilotSubscription subscriber, WishEvent wish);
-
+    void sendWishSubscriptionNotification(CopilotSubscription subscriber, WishEvent wish);
 }

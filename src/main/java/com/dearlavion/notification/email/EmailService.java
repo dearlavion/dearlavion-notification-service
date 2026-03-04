@@ -2,7 +2,6 @@ package com.dearlavion.notification.email;
 
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -12,32 +11,6 @@ import org.springframework.stereotype.Service;
 public class EmailService {
 
     private final JavaMailSender mailSender;
-
-    public void sendWelcomeEmail(String toEmail, String name) {
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("dearlavion@gmail.com");
-        message.setTo(toEmail);
-        message.setSubject("Welcome to DearLavion 🎉");
-        message.setText(
-                "Hi " + name + ",\n\n" +
-                        "Thank you for registering!\n\n" +
-                        "— DearLavion Team"
-        );
-
-        mailSender.send(message);
-    }
-
-    /*public void sendEmail(String sender, String receiver, String subject, String body) {
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(sender);
-        message.setTo(receiver);
-        message.setSubject(subject);
-        message.setText(body);
-
-        mailSender.send(message);
-    }*/
 
     public void sendEmail(String sender, String receiver, String subject, String body) {
 
