@@ -8,7 +8,7 @@ public class EmailTemplateService {
 
     public String buildWishSubscriberTemplate(String username, WishEvent wish, String wishUrl) {
 
-        String wishLink = wishUrl + "/wish/" + wish.getId();
+        String wishLink = wishUrl + "wish/" + wish.getId();
         String budgetSection = buildBudgetSection(wish);
 
         return """

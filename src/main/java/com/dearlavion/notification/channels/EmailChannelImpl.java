@@ -50,7 +50,7 @@ public class EmailChannelImpl implements ChannelService {
     }
 
     public void sendResetPasswordNotification(String username, String token) {
-        String resetLink = frontendUrl + "/reset?token=" + token;
+        String resetLink = frontendUrl + "reset?token=" + token;
 
         String to = getRegisteredEmail(username);
 
