@@ -79,7 +79,7 @@ jobs:
         run: |
           export PATH=$HOME/.local/bin:$PATH
           ansible-playbook \
-            -i dearlavion-projects/ansible/inventory/hosts.ini \
-            dearlavion-projects/ansible/playbook/site.yml \
+            -i inventory/hosts.ini \
+            playbook/site.yml \
             -e "target=notification env=dev ssh_user=baish ssh_host=157.173.97.37 use_registry=true ghcr_pat=${{ secrets.DEARLAVION_PAT }}" \
             --ssh-extra-args="-o StrictHostKeyChecking=no"
