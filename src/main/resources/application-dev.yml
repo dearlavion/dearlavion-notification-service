@@ -1,44 +1,52 @@
 spring:
-  cache:
-    type: redis   # 👈 enables Redis as Spring Cache
   data:
     mongodb:
       uri: mongodb+srv://admin:admin@dearlavioncluster.xnanadi.mongodb.net/notification-service?retryWrites=true&w=majority&appName=DearLavionCluster
       auto-index-creation: true
       socket-timeout: 20000
       connect-timeout: 10000
-  main:
-    allow-circular-references: true
-  jackson:
-    serialization:
-      WRITE_DATES_AS_TIMESTAMPS: false
-  redis:
-    enabled: false
-    host: dearlavion-redis
-    port: 6379
-    timeout: 5000ms
   kafka:
     bootstrap-servers: kafka:9092
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: dearlavion-notification-group
+      auto-offset-reset: earliest
+
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+      properties:
+        spring.json.trusted.packages: "*"
+        spring.json.use.type.headers: false
+        spring.json.value.default.type: com.dearlavion.notification.kafka.dto.KafkaEvent
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: dearlavion@gmail.com
+    password: zplbgfewlboykxlp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+email:
+  sender: dearlavion@gmail.com
+  frontend:
+    url: https://dearlavion.site/
+
 server:
   port: 8083
   address: 0.0.0.0
 
-kafka:
-  enabled: false
-
-springdoc:
-  api-docs:
-    path: /v3/api-docs
-  swagger-ui:
-    path: /swagger-ui/index.html
+auth:
+  server:
+    url: http://dearlavion-authentication-service:8081
 
 logging:
   level:
-    org.springframework.boot.autoconfigure.mongo: DEBUG
-
-openai:
-  enabled: false
-  api-key: 123
+    org.springframework.mail: DEBUG
+    jakarta.mail: DEBUG
