@@ -1,4 +1,4 @@
-name: Deploy Core Service to DEV
+name: Deploy Notification Service to DEV
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
       - develop
 
 jobs:
-  build-and-deploy-core:
+  build-and-deploy-notification:
     runs-on: ubuntu-latest
 
     steps:
