@@ -75,7 +75,7 @@ jobs:
       # ----------------------------
       # Deploy on DEV server via Ansible
       # ----------------------------
-      - name: Deploy Web UI
+      - name: Deploy Notification Service
         run: |
           export PATH=$HOME/.local/bin:$PATH
           ansible-playbook \
