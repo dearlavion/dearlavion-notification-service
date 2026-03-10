@@ -102,4 +102,19 @@ public class SubscriptionService {
         if (dto.getIsActive() != null)
             sub.setIsActive(dto.getIsActive());
     }
+
+    public boolean isSubscribedToCity(String username, SubscriptionType type, String countryCode, String cityName) {
+        return switch (type) {
+            case COPILOT -> !copilotRepo.findByCountryCodeAndCityNameAndIsActive(countryCode, cityName, true)
+                    .stream()
+                    .filter(sub -> sub.getUsername().equals(username))
+                    .toList()
+                    .isEmpty();
+            case WISHER -> !wisherRepo.findByCountryCodeAndCityNameAndIsActive(countryCode, cityName, true)
+                    .stream()
+                    .filter(sub -> sub.getUsername().equals(username))
+                    .toList()
+                    .isEmpty();
+        };
+    }
 }

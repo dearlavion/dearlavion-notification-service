@@ -47,6 +47,16 @@ public class SubscriptionController {
     ) {
         return service.patch(id, type, dto);
     }
+
+    @GetMapping("/check")
+    public boolean isSubscribedToCity(
+            @RequestParam String username,
+            @RequestParam SubscriptionType type,
+            @RequestParam String countryCode,
+            @RequestParam String cityName
+    ) {
+        return service.isSubscribedToCity(username, type, countryCode, cityName);
+    }
 }
 
 
