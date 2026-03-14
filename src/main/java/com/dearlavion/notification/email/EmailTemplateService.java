@@ -127,4 +127,82 @@ public class EmailTemplateService {
     private String safe(String value) {
         return value == null ? "" : value;
     }
+
+    public String buildWelcomeUserTemplate(String username, String appUrl) {
+
+        return """
+    <div style="background-color:#f4f6f8; padding:40px 20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+
+        <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:14px; padding:40px; box-shadow:0 8px 24px rgba(0,0,0,0.06);">
+
+            <!-- Header -->
+            <div style="text-align:center; margin-bottom:30px;">
+                <h1 style="margin:0; font-size:22px; letter-spacing:1px; color:#ce5886;">
+                    ✈️ DearLavion
+                </h1>
+            </div>
+
+            <!-- Greeting -->
+            <p style="font-size:16px; margin:0 0 20px 0;">
+                Welcome <strong>%s</strong>! 🎉
+            </p>
+
+            <!-- Message -->
+            <p style="font-size:15px; color:#555; margin-bottom:25px;">
+                Your account has been successfully created and you're now part of the 
+                <strong>DearLavion</strong> community.
+            </p>
+
+            <p style="font-size:15px; color:#555; margin-bottom:25px;">
+                DearLavion helps people share wishes and connect with others who can help make them happen.
+                Whether you're posting a wish or helping someone else's take flight, you're in the right place.
+            </p>
+
+            <!-- Feature Card -->
+            <div style="border:1px solid #eee; border-radius:12px; padding:25px; margin-bottom:30px; background:#fff0f5;">
+
+                <h2 style="margin:0 0 12px 0; font-size:18px; color:#ce5886;">
+                    What you can do next
+                </h2>
+
+                <ul style="padding-left:18px; margin:0; color:#555; font-size:14px;">
+                    <li style="margin-bottom:8px;">✨ Post your first wish</li>
+                    <li style="margin-bottom:8px;">🌍 Explore wishes from your city</li>
+                    <li style="margin-bottom:8px;">🤝 Become a Copilot and help others</li>
+                </ul>
+
+            </div>
+
+            <!-- CTA Button -->
+            <div style="text-align:center; margin-bottom:35px;">
+                <a href="%s"
+                   style="background-color:#ce5886;
+                          color:#ffffff;
+                          padding:14px 28px;
+                          border-radius:10px;
+                          text-decoration:none;
+                          font-weight:600;
+                          font-size:14px;
+                          display:inline-block;">
+                    Start Exploring
+                </a>
+            </div>
+
+            <!-- Footer -->
+            <hr style="border:none; border-top:1px solid #eee; margin:30px 0;" />
+
+            <p style="font-size:12px; color:#999; text-align:center; line-height:1.6;">
+                We're excited to have you with us.<br/>
+                — <span style="color:#ce5886;">DearLavion Team</span><br/>
+                <em>We help your wishes take flight ✈️</em>
+            </p>
+
+        </div>
+    </div>
+    """
+                .formatted(
+                        username != null ? username : "there",
+                        appUrl
+                );
+    }
 }

@@ -3,10 +3,9 @@ package com.dearlavion.notification.kafka;
 import com.dearlavion.notification.channels.ChannelService;
 import com.dearlavion.notification.channels.EmailChannelImpl;
 import com.dearlavion.notification.email.EmailService;
-import com.dearlavion.notification.kafka.dto.KafkaEvent;
-import com.dearlavion.notification.kafka.dto.EventType;
-import com.dearlavion.notification.kafka.dto.ResetPasswordEvent;
-import com.dearlavion.notification.kafka.dto.WishEvent;
+import com.dearlavion.notification.kafka.dispatcher.AuthenticationEventDispatcher;
+import com.dearlavion.notification.kafka.dto.*;
+import com.dearlavion.notification.kafka.handler.AuthenticationEventHandler;
 import com.dearlavion.notification.subscription.SubscriptionMatcherService;
 import com.dearlavion.notification.subscription.dto.CopilotSubscription;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +22,8 @@ public class KafkaEventConsumer {
     private final ChannelService channelService;
     private final ObjectMapper objectMapper;
     private final EmailChannelImpl emailChannel;
+    private final AuthenticationEventDispatcher authenticationEventDispatcher;
+
     @KafkaListener(topics = "core-service-event", groupId = "dearlavion-notification-group")
     public void wishConsumer(KafkaEvent event) {
 
@@ -43,15 +44,12 @@ public class KafkaEventConsumer {
     }
 
     @KafkaListener(topics = "authentication-service-event", groupId = "dearlavion-notification-group")
-    public void resetPasswordListener(KafkaEvent event) {
+    public void authenticationEvents(KafkaEvent event) {
 
-        if (event.getType() != EventType.RESET_PASSWORD) return;
+        AuthenticationEventHandler handler = authenticationEventDispatcher.getHandler(event.getType());
+        if (handler == null) return;
 
-        ResetPasswordEvent resetPasswordEvent =
-                objectMapper.convertValue(event.getPayload(), ResetPasswordEvent.class);
-
-        System.out.println("Received event: " + resetPasswordEvent);
-
-        emailChannel.sendResetPasswordNotification(resetPasswordEvent.getUsername(), resetPasswordEvent.getToken());
+        Object payload = objectMapper.convertValue(event.getPayload(), handler.payloadType());
+        handler.handle(payload);
     }
 }

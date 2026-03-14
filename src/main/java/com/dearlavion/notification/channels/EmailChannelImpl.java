@@ -68,6 +68,24 @@ public class EmailChannelImpl implements ChannelService {
         emailService.sendEmail(sender, to, subject, body);
     }
 
+    public void sendWelcomeUserNotification(String username) {
+
+        String to = getRegisteredEmail(username);
+
+        if (to == null || to.isBlank()) {
+            return;
+        }
+
+        String subject = "✈️ Welcome to DearLavion";
+
+        String body = templateService.buildWelcomeUserTemplate(
+                username,
+                frontendUrl
+        );
+
+        emailService.sendEmail(sender, to, subject, body);
+    }
+
     private String getRegisteredEmail(String username) {
         if (username == null) return null;
 
