@@ -9,10 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class AuthenticationEventDispatcher {
+public class CoreEventDispatcher {
     private final Map<EventType, EventHandler<?>> handlers = new HashMap<>();
 
-    public AuthenticationEventDispatcher(List<EventHandler<?>> handlerList) {
+    public CoreEventDispatcher(List<EventHandler<?>> handlerList) {
         handlerList.forEach(handler -> handlers.put(handler.getEventType(), handler));
     }
 

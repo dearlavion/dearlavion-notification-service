@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ResetPasswordEventHandler implements AuthenticationEventHandler<ResetPasswordEvent> {
+public class ResetPasswordEventHandler implements EventHandler<ResetPasswordEvent> {
 
     private final EmailChannelImpl emailChannel;
 

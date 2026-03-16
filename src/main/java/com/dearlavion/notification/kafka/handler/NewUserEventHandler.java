@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class NewUserEventHandler implements AuthenticationEventHandler<NewUserEvent> {
+public class NewUserEventHandler implements EventHandler<NewUserEvent> {
 
     private final EmailChannelImpl emailChannel;
 
