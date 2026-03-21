@@ -1,12 +1,12 @@
-package com.dearlavion.notification.kafka.dto;
+package com.dearlavion.notification.kafka.dto.core;
 
+import com.dearlavion.notification.channels.ChannelType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -27,4 +27,6 @@ public class WishEvent {
     // --- Payment / rate filters ---
     private Boolean isPaid;
     private BigDecimal amount;
+    @Builder.Default
+    private List<ChannelType> channels = List.of(ChannelType.EMAIL);
 }

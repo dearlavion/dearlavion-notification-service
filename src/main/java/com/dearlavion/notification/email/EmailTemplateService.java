@@ -1,6 +1,6 @@
 package com.dearlavion.notification.email;
 
-import com.dearlavion.notification.kafka.dto.WishEvent;
+import com.dearlavion.notification.kafka.dto.core.WishEvent;
 import org.springframework.stereotype.Service;
 
 @Service

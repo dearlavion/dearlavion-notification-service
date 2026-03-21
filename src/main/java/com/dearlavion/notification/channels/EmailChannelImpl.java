@@ -2,17 +2,16 @@ package com.dearlavion.notification.channels;
 
 import com.dearlavion.notification.email.EmailService;
 import com.dearlavion.notification.email.EmailTemplateService;
-import com.dearlavion.notification.kafka.dto.WishEvent;
+import com.dearlavion.notification.kafka.dto.core.WishEvent;
 import com.dearlavion.notification.security.AuthServiceClient;
 import com.dearlavion.notification.security.UserDto;
-import com.dearlavion.notification.subscription.dto.CopilotSubscription;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class EmailChannelImpl implements ChannelService {
+public class EmailChannelImpl implements ChannelService<WishEvent> {
 
     private final EmailService emailService;
     private final AuthServiceClient authService;
@@ -25,18 +24,21 @@ public class EmailChannelImpl implements ChannelService {
     private String frontendUrl;
 
     @Override
-    public String getChannel() {
-        return "EMAIL";
+    public ChannelType getChannel() {
+        return ChannelType.EMAIL;
     }
 
     @Override
-    public void sendWishSubscriptionNotification(CopilotSubscription subscriber, WishEvent wish) {
+    public void sendNotification(String sender, String receiver, WishEvent wish) {
+        if (sender == null) {
+            sender = this.sender; //sender email from config
+        }
 
-        if (sender == null || subscriber == null || wish == null) {
+        if (sender == null || receiver == null || wish == null) {
             return;
         }
 
-        String to = getRegisteredEmail(subscriber.getUsername());
+        String to = getRegisteredEmail(receiver);
 
         if (to == null || to.isBlank()) {
             return;
@@ -44,7 +46,7 @@ public class EmailChannelImpl implements ChannelService {
 
         String subject = "✈️ Dear lavion, New Wish Alert in " + wish.getCityName();
 
-        String body = templateService.buildWishSubscriberTemplate(subscriber.getUsername(), wish, frontendUrl);
+        String body = templateService.buildWishSubscriberTemplate(receiver, wish, frontendUrl);
 
         emailService.sendEmail(sender, to, subject, body);
     }

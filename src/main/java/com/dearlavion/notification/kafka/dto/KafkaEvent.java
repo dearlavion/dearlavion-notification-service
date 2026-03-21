@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class KafkaEvent {
-    private EventType type;
+    private KafkaEventType type;
     private Object payload;
 }

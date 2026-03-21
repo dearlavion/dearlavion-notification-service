@@ -35,6 +35,7 @@ public class SecurityConfig {
                         .requestMatchers("/actuator/**", "/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         // PUBLIC
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/notification/ws/**").permitAll() // ✅ allow websocket
                         // AUTHENTICATED
                         .requestMatchers("/notification/subscription/**").authenticated()
                         // EVERYTHING ELSE

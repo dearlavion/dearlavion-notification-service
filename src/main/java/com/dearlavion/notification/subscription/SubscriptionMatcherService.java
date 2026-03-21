@@ -1,6 +1,6 @@
 package com.dearlavion.notification.subscription;
 
-import com.dearlavion.notification.kafka.dto.WishEvent;
+import com.dearlavion.notification.kafka.dto.core.WishEvent;
 import com.dearlavion.notification.subscription.dto.CopilotSubscription;
 import com.dearlavion.notification.subscription.repository.CopilotSubscriptionRepository;
 import lombok.RequiredArgsConstructor;

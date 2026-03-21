@@ -1,4 +1,4 @@
-package com.dearlavion.notification.kafka.dto;
+package com.dearlavion.notification.kafka.dto.authentication;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

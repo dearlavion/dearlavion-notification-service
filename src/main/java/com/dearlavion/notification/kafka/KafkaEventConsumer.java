@@ -4,13 +4,10 @@ import com.dearlavion.notification.kafka.dispatcher.AuthenticationEventDispatche
 import com.dearlavion.notification.kafka.dispatcher.CoreEventDispatcher;
 import com.dearlavion.notification.kafka.dto.KafkaEvent;
 import com.dearlavion.notification.kafka.handler.EventHandler;
-import com.dearlavion.notification.subscription.dto.CopilotSubscription;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor

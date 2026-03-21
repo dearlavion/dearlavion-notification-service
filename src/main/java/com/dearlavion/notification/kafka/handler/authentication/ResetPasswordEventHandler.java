@@ -1,8 +1,9 @@
-package com.dearlavion.notification.kafka.handler;
+package com.dearlavion.notification.kafka.handler.authentication;
 
 import com.dearlavion.notification.channels.EmailChannelImpl;
-import com.dearlavion.notification.kafka.dto.EventType;
-import com.dearlavion.notification.kafka.dto.ResetPasswordEvent;
+import com.dearlavion.notification.kafka.dto.KafkaEventType;
+import com.dearlavion.notification.kafka.dto.authentication.ResetPasswordEvent;
+import com.dearlavion.notification.kafka.handler.EventHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,8 @@ public class ResetPasswordEventHandler implements EventHandler<ResetPasswordEven
     private final EmailChannelImpl emailChannel;
 
     @Override
-    public EventType getEventType() {
-        return EventType.RESET_PASSWORD;
+    public KafkaEventType getEventType() {
+        return KafkaEventType.RESET_PASSWORD;
     }
 
     @Override

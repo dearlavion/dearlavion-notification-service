@@ -1,8 +1,9 @@
-package com.dearlavion.notification.kafka.handler;
+package com.dearlavion.notification.kafka.handler.authentication;
 
 import com.dearlavion.notification.channels.EmailChannelImpl;
-import com.dearlavion.notification.kafka.dto.EventType;
-import com.dearlavion.notification.kafka.dto.NewUserEvent;
+import com.dearlavion.notification.kafka.dto.KafkaEventType;
+import com.dearlavion.notification.kafka.dto.authentication.NewUserEvent;
+import com.dearlavion.notification.kafka.handler.EventHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -14,8 +15,8 @@ public class NewUserEventHandler implements EventHandler<NewUserEvent> {
     private final EmailChannelImpl emailChannel;
 
     @Override
-    public EventType getEventType() {
-        return EventType.NEW_USER;
+    public KafkaEventType getEventType() {
+        return KafkaEventType.NEW_USER;
     }
 
     @Override
