@@ -7,5 +7,12 @@ public enum KafkaEventType {
 
     // core events
     NEW_WISH,
-    REQUEST
+    REQUEST,
+
+    // booking-engine events
+    BOOKING_CREATED,
+    BOOKING_CONFIRMED,
+    BOOKING_CANCELLED,
+    BOOKING_RESCHEDULED,
+    BOOKING_REMINDER_DUE
 }

@@ -1,6 +1,7 @@
 package com.dearlavion.notification.kafka;
 
 import com.dearlavion.notification.kafka.dispatcher.AuthenticationEventDispatcher;
+import com.dearlavion.notification.kafka.dispatcher.BookingEventDispatcher;
 import com.dearlavion.notification.kafka.dispatcher.CoreEventDispatcher;
 import com.dearlavion.notification.kafka.dto.KafkaEvent;
 import com.dearlavion.notification.kafka.handler.EventHandler;
@@ -15,6 +16,7 @@ public class KafkaEventConsumer {
     private final ObjectMapper objectMapper;
     private final AuthenticationEventDispatcher authenticationEventDispatcher;
     private final CoreEventDispatcher coreEventDispatcher;
+    private final BookingEventDispatcher bookingEventDispatcher;
 
     @KafkaListener(topics = "core-service-event", groupId = "dearlavion-notification-group")
     public void coreEvents(KafkaEvent event) {
@@ -29,6 +31,16 @@ public class KafkaEventConsumer {
     public void authenticationEvents(KafkaEvent event) {
 
         EventHandler handler = authenticationEventDispatcher.getHandler(event.getType());
+        if (handler == null) return;
+
+        Object payload = objectMapper.convertValue(event.getPayload(), handler.payloadType());
+        handler.handle(payload);
+    }
+
+    @KafkaListener(topics = "booking-engine-event", groupId = "dearlavion-notification-group")
+    public void bookingEvents(KafkaEvent event) {
+
+        EventHandler handler = bookingEventDispatcher.getHandler(event.getType());
         if (handler == null) return;
 
         Object payload = objectMapper.convertValue(event.getPayload(), handler.payloadType());
