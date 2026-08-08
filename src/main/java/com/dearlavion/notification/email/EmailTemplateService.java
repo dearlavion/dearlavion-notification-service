@@ -284,6 +284,82 @@ public class EmailTemplateService {
                 );
     }
 
+    /** New Popular Kit announcement — sent once per newly-created kit to every current newsletter
+     * subscriber (see PopularKitService.create() on the store-engine side). Same brand shell as
+     * the other templates; adds an optional kit image banner + tag badge above the message. */
+    public String buildPopularKitAnnouncementTemplate(String kitName, String kitSlug, String image, String tag) {
+        String kitUrl = TRAVEL_BESTY_FRONTEND_URL + "/popular/" + (kitSlug != null ? kitSlug : "");
+        String imageHtml = image != null && !image.isBlank()
+                ? """
+                <tr><td style="padding:0 0 24px 0;">
+                    <img src="%s" width="600" alt="%s" style="display:block; width:100%%; max-width:600px; border-radius:12px 12px 0 0;" />
+                </td></tr>
+                """.formatted(safe(image), safe(kitName))
+                : "";
+        String tagHtml = tag != null && !tag.isBlank()
+                ? """
+                <span style="display:inline-block; background:#fff0f5; color:#ce5886; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; padding:4px 12px; border-radius:999px; margin-bottom:14px;">%s</span><br/>
+                """.formatted(safe(tag))
+                : "";
+
+        return """
+        <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+        <tr><td align="center" style="padding:40px 20px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%%; background:#ffffff; border-radius:14px; box-shadow:0 8px 24px rgba(0,0,0,0.06); overflow:hidden;">
+        %s
+        <tr><td style="padding:40px;">
+
+            %s
+            <h1 style="margin:0 0 14px 0; font-size:22px; color:#2d2d2d;">
+                New Kit: %s
+            </h1>
+
+            <p style="font-size:15px; color:#555; margin-bottom:30px;">
+                We just added a new Popular Kit to Travel Besty — take a look and see if it fits
+                your next trip.
+            </p>
+
+            <!-- CTA -->
+            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
+            <tr><td align="center" style="padding:8px 10px 28px;">
+                <a href="%s" style="display:inline-block; background:#f2994a; color:#fff; font-size:14px; font-weight:700; text-decoration:none; padding:13px 32px; border-radius:999px;">
+                    View Kit
+                </a>
+            </td></tr>
+            </table>
+
+            <!-- Footer -->
+            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
+            <tr><td align="center" style="padding:28px 20px 24px;">
+                <p style="margin:0 0 8px 0; font-size:13px; color:#8a8a8a;">
+                    Built with 💛 by <a href="%s" style="font-weight:700; color:#ce5886; text-decoration:none;">TravelBesty.ph</a>
+                </p>
+                <p style="margin:0; font-size:12.5px; color:#c98aa2; font-style:italic;">
+                    Personalized travel essentials for every trip.
+                </p>
+                <!-- Same anti-collapse marker as the other templates — see buildKitEmailTemplate's
+                     comment. Especially relevant here since this exact HTML goes out to every
+                     subscriber at once, so every recipient's inbox sees byte-identical content
+                     unless this token varies per send. -->
+                <span style="font-size:0; line-height:0; color:transparent; display:block; height:0; overflow:hidden;">%s</span>
+            </td></tr>
+            </table>
+
+        </td></tr>
+        </table>
+        </td></tr>
+        </table>
+        """
+                .formatted(
+                        imageHtml,
+                        tagHtml,
+                        safe(kitName),
+                        kitUrl,
+                        TRAVEL_BESTY_FRONTEND_URL,
+                        java.util.UUID.randomUUID()
+                );
+    }
+
     /** Groups items by kitCategory (mirrors my-kit.component.ts's own groupedDisplayItems —
      * items with no category fall under "Other"), rendering each as a checkbox-style row with a
      * bullet list of up to 3 clickable product-suggestion links underneath. */
