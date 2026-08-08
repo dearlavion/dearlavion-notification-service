@@ -1,5 +1,6 @@
 package com.dearlavion.notification.email;
 
+import com.dearlavion.notification.email.model.KitEmailRequest;
 import com.dearlavion.notification.kafka.dto.core.WishEvent;
 import org.springframework.stereotype.Service;
 
@@ -126,6 +127,86 @@ public class EmailTemplateService {
 
     private String safe(String value) {
         return value == null ? "" : value;
+    }
+
+    /** Travel Besty branding (not "DearLavion" — the other templates in this file are for the
+     * separate marketplace product this service was originally built for). */
+    public String buildKitEmailTemplate(String displayName, KitEmailRequest req) {
+        String title = req.getKitTitle() != null && !req.getKitTitle().isBlank() ? req.getKitTitle() : "Your Travel Kit";
+        String summarySection = req.getSummary() != null && !req.getSummary().isBlank()
+                ? "<p style=\"font-size:15px; color:#555; margin-bottom:25px;\">%s</p>".formatted(safe(req.getSummary()))
+                : "";
+        String itemsHtml = buildKitItemsList(req.getItems());
+
+        return """
+        <div style="background-color:#f4f6f8; padding:40px 20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+
+            <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:14px; padding:40px; box-shadow:0 8px 24px rgba(0,0,0,0.06);">
+
+                <!-- Header -->
+                <div style="text-align:center; margin-bottom:30px;">
+                    <h1 style="margin:0; font-size:22px; letter-spacing:1px; color:#ce5886;">
+                        🧳 Travel Besty
+                    </h1>
+                </div>
+
+                <!-- Greeting -->
+                <p style="font-size:16px; margin:0 0 20px 0;">
+                    Hi <strong>%s</strong>,
+                </p>
+
+                <p style="font-size:15px; color:#555; margin-bottom:10px;">
+                    Here's the packing kit you asked us to email you:
+                </p>
+
+                <!-- Kit Card -->
+                <div style="border:1px solid #eee; border-radius:12px; padding:25px; margin-bottom:30px; background:#fff0f5;">
+
+                    <h2 style="margin:0 0 10px 0; font-size:18px; color:#ce5886;">
+                        %s
+                    </h2>
+
+                    %s
+
+                    <ul style="padding-left:18px; margin:0; color:#555; font-size:14px;">
+                        %s
+                    </ul>
+
+                </div>
+
+                <!-- Footer -->
+                <hr style="border:none; border-top:1px solid #eee; margin:30px 0;" />
+
+                <p style="font-size:12px; color:#999; text-align:center; line-height:1.6;">
+                    Built with — <span style="color:#ce5886;">Travel Besty</span><br/>
+                    <em>Nothing extra, nothing forgotten 🧳</em>
+                </p>
+
+            </div>
+        </div>
+        """
+                .formatted(
+                        displayName != null && !displayName.isBlank() ? displayName : "there",
+                        safe(title),
+                        summarySection,
+                        itemsHtml
+                );
+    }
+
+    private String buildKitItemsList(java.util.List<KitEmailRequest.Item> items) {
+        if (items == null || items.isEmpty()) {
+            return "<li>No items yet.</li>";
+        }
+        StringBuilder sb = new StringBuilder();
+        for (KitEmailRequest.Item item : items) {
+            String suffix = item.getProductName() != null && !item.getProductName().isBlank()
+                    ? "&nbsp;&mdash;&nbsp;%s%s".formatted(
+                            safe(item.getProductName()),
+                            item.getPrice() != null ? " ($%.2f)".formatted(item.getPrice()) : "")
+                    : "";
+            sb.append("<li style=\"margin-bottom:8px;\">%s%s</li>".formatted(safe(item.getLabel()), suffix));
+        }
+        return sb.toString();
     }
 
     public String buildWelcomeUserTemplate(String username, String appUrl) {

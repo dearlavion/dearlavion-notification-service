@@ -38,6 +38,7 @@ public class SecurityConfig {
                         .requestMatchers("/notification/ws/**").permitAll() // ✅ allow websocket
                         // AUTHENTICATED
                         .requestMatchers("/notification/subscription/**").authenticated()
+                        .requestMatchers("/notification/email/**").authenticated()
                         // EVERYTHING ELSE
                         .anyRequest().permitAll()
                 )
