@@ -5,7 +5,6 @@ import com.dearlavion.notification.security.AuthServiceClient;
 import com.dearlavion.notification.security.AuthVerificationResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,12 +26,17 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class KitEmailController {
 
+    // Travel Besty's own sender identity — deliberately not the shared "${email.sender}" property
+    // (application.yml) that the DearLavion-branded flows (welcome/password-reset/wish-subscriber
+    // emails) use, so changing this brand's sender can never affect those. Note: Gmail SMTP only
+    // honors a From address that matches the authenticated account or one of its verified "Send
+    // As" aliases — if travelbesty.ph@gmail.com isn't already one of those for the credentials
+    // configured in application.yml, Gmail will reject or silently rewrite this header.
+    private static final String SENDER = "travelbesty.ph@gmail.com";
+
     private final AuthServiceClient authClient;
     private final EmailTemplateService templateService;
     private final EmailService emailService;
-
-    @Value("${email.sender}")
-    private String sender;
 
     @PostMapping("/notification/email/kit")
     public ResponseEntity<?> emailKit(HttpServletRequest request, @RequestBody KitEmailRequest body) {
@@ -47,8 +51,15 @@ public class KitEmailController {
         }
 
         String html = templateService.buildKitEmailTemplate(verification.getUsername(), body);
-        String subject = "🧳 " + (body.getKitTitle() != null && !body.getKitTitle().isBlank() ? body.getKitTitle() : "Your Travel Kit");
-        emailService.sendEmail(sender, verification.getEmail(), subject, html);
+        // The frontend now always prompts for a kit name before calling this endpoint (see
+        // KitNamePopupComponent), so kitTitle is normally a real user-chosen name — the "Your
+        // Travel Kit" fallback only fires for stale/legacy callers with no name at all, in which
+        // case the "Your X Travel Kit" phrasing would otherwise double up awkwardly.
+        String kitTitle = body.getKitTitle();
+        String subject = kitTitle != null && !kitTitle.isBlank() && !kitTitle.equalsIgnoreCase("Your Travel Kit")
+                ? "Travel Besty, Your " + kitTitle + " Travel Kit is here"
+                : "Travel Besty, Your Travel Kit is here";
+        emailService.sendEmail(SENDER, verification.getEmail(), subject, html);
 
         return ResponseEntity.ok(Map.of("sent", true));
     }

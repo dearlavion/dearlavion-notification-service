@@ -136,76 +136,130 @@ public class EmailTemplateService {
         String summarySection = req.getSummary() != null && !req.getSummary().isBlank()
                 ? "<p style=\"font-size:15px; color:#555; margin-bottom:25px;\">%s</p>".formatted(safe(req.getSummary()))
                 : "";
-        String itemsHtml = buildKitItemsList(req.getItems());
+        String itemsHtml = buildKitItemsHtml(req.getItems());
 
+        // Table-based layout (not the div/p structure this had before) — Gmail's "quote"/
+        // "signature" collapse heuristic (the "..." a recipient has to click to reveal hidden
+        // content) reliably misfires on div-based email bodies, which is why every major ESP
+        // (Mailchimp, SendGrid, Postmark) builds transactional emails on nested <table>s instead.
+        // Removing just the footer's divider line (an earlier attempt) did not stop the footer
+        // from being collapsed — this structural change is the actual fix.
         return """
-        <div style="background-color:#f4f6f8; padding:40px 20px; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+        <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+        <tr><td align="center" style="padding:40px 20px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%%; background:#ffffff; border-radius:14px; box-shadow:0 8px 24px rgba(0,0,0,0.06);">
+        <tr><td style="padding:40px;">
 
-            <div style="max-width:600px; margin:0 auto; background:#ffffff; border-radius:14px; padding:40px; box-shadow:0 8px 24px rgba(0,0,0,0.06);">
+            <!-- Greeting -->
+            <p style="font-size:16px; margin:0 0 20px 0;">
+                Hi <strong>%s</strong>,
+            </p>
 
-                <!-- Header -->
-                <div style="text-align:center; margin-bottom:30px;">
-                    <h1 style="margin:0; font-size:22px; letter-spacing:1px; color:#ce5886;">
-                        🧳 Travel Besty
-                    </h1>
-                </div>
+            <p style="font-size:15px; color:#555; margin-bottom:10px;">
+                Here’s the travel kit we curated together.\s
+                Nothing extra, nothing forgotten.
+            </p>
 
-                <!-- Greeting -->
-                <p style="font-size:16px; margin:0 0 20px 0;">
-                    Hi <strong>%s</strong>,
-                </p>
+            <!-- Kit Card -->
+            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="border:1px solid #eee; border-radius:12px; background:#fff0f5; margin-bottom:30px;">
+            <tr><td style="padding:25px;">
 
-                <p style="font-size:15px; color:#555; margin-bottom:10px;">
-                    Here's the packing kit you asked us to email you:
-                </p>
-
-                <!-- Kit Card -->
-                <div style="border:1px solid #eee; border-radius:12px; padding:25px; margin-bottom:30px; background:#fff0f5;">
-
-                    <h2 style="margin:0 0 10px 0; font-size:18px; color:#ce5886;">
-                        %s
-                    </h2>
-
+                <h2 style="margin:0 0 10px 0; font-size:18px; color:#ce5886;">
                     %s
+                </h2>
 
-                    <ul style="padding-left:18px; margin:0; color:#555; font-size:14px;">
-                        %s
-                    </ul>
+                %s
 
-                </div>
+                %s
 
-                <!-- Footer -->
-                <hr style="border:none; border-top:1px solid #eee; margin:30px 0;" />
+            </td></tr>
+            </table>
 
-                <p style="font-size:12px; color:#999; text-align:center; line-height:1.6;">
-                    Built with — <span style="color:#ce5886;">Travel Besty</span><br/>
-                    <em>Nothing extra, nothing forgotten 🧳</em>
+            <!-- CTA -->
+            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
+            <tr><td align="center" style="padding:8px 10px 28px;">
+                <p style="margin:0 0 16px 0; font-size:16px; font-weight:700; color:#2d2d2d;">
+                    Stop forgetting travel essentials.
                 </p>
+                <a href="%s/travel" style="display:inline-block; background:#f2994a; color:#fff; font-size:14px; font-weight:700; text-decoration:none; padding:13px 32px; border-radius:999px;">
+                    Build a Kit
+                </a>
+            </td></tr>
+            </table>
 
-            </div>
-        </div>
+            <!-- Footer -->
+            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background:#fdf5f8; border-radius:12px;">
+            <tr><td align="center" style="padding:28px 20px 24px;">
+                <p style="margin:0 0 8px 0; font-size:13px; color:#8a8a8a;">
+                    Built with 💛 by <span style="font-weight:700; color:#ce5886;">TravelBesty.ph</span>
+                </p>
+                <p style="margin:0; font-size:12.5px; color:#c98aa2; font-style:italic;">
+                    Personalized travel essentials for every trip.
+                </p>
+            </td></tr>
+            </table>
+
+        </td></tr>
+        </table>
+        </td></tr>
+        </table>
         """
                 .formatted(
                         displayName != null && !displayName.isBlank() ? displayName : "there",
                         safe(title),
                         summarySection,
-                        itemsHtml
+                        itemsHtml,
+                        TRAVEL_BESTY_FRONTEND_URL
                 );
     }
 
-    private String buildKitItemsList(java.util.List<KitEmailRequest.Item> items) {
+    // Travel Besty's eventual production domain — this app has no live public URL yet, so
+    // clicking a suggestion link or the "Build a Kit" CTA before launch won't resolve. Update
+    // this once the site is actually deployed there.
+    private static final String TRAVEL_BESTY_FRONTEND_URL = "https://travelbesty.ph";
+
+    /** Groups items by kitCategory (mirrors my-kit.component.ts's own groupedDisplayItems —
+     * items with no category fall under "Other"), rendering each as a checkbox-style row with a
+     * bullet list of up to 3 clickable product-suggestion links underneath. */
+    private String buildKitItemsHtml(java.util.List<KitEmailRequest.Item> items) {
         if (items == null || items.isEmpty()) {
-            return "<li>No items yet.</li>";
+            return "<p style=\"margin:0; color:#555; font-size:14px;\">No items yet.</p>";
         }
-        StringBuilder sb = new StringBuilder();
+
+        java.util.LinkedHashMap<String, java.util.List<KitEmailRequest.Item>> byCategory = new java.util.LinkedHashMap<>();
         for (KitEmailRequest.Item item : items) {
-            String suffix = item.getProductName() != null && !item.getProductName().isBlank()
-                    ? "&nbsp;&mdash;&nbsp;%s%s".formatted(
-                            safe(item.getProductName()),
-                            item.getPrice() != null ? " ($%.2f)".formatted(item.getPrice()) : "")
-                    : "";
-            sb.append("<li style=\"margin-bottom:8px;\">%s%s</li>".formatted(safe(item.getLabel()), suffix));
+            String category = item.getKitCategory() != null && !item.getKitCategory().isBlank() ? item.getKitCategory() : "Other";
+            byCategory.computeIfAbsent(category, k -> new java.util.ArrayList<>()).add(item);
         }
+
+        // Table rows, not p/ul/li — see buildKitEmailTemplate's comment on why this whole email
+        // is table-based.
+        StringBuilder sb = new StringBuilder("<table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">");
+        for (var entry : byCategory.entrySet()) {
+            sb.append("""
+                    <tr><td style="padding:16px 0 8px 0; font-size:12.5px; font-weight:700; color:#ce5886; text-transform:uppercase; letter-spacing:0.5px;">%s</td></tr>
+                    """.formatted(safe(entry.getKey())));
+            for (KitEmailRequest.Item item : entry.getValue()) {
+                sb.append("""
+                        <tr><td style="padding:0 0 4px 0; font-size:14px; color:#333;"><span style="font-size:20px; vertical-align:-3px;">&#9744;</span>&nbsp;%s</td></tr>
+                        """.formatted(safe(item.getLabel())));
+                sb.append(buildSuggestionsRows(item.getSuggestions()));
+            }
+        }
+        sb.append("</table>");
+        return sb.toString();
+    }
+
+    private String buildSuggestionsRows(java.util.List<KitEmailRequest.Suggestion> suggestions) {
+        if (suggestions == null || suggestions.isEmpty()) return "";
+        StringBuilder sb = new StringBuilder();
+        for (KitEmailRequest.Suggestion s : suggestions) {
+            String url = TRAVEL_BESTY_FRONTEND_URL + "/product/" + safe(s.getProductId()) + "/items/" + safe(s.getItemId());
+            sb.append("""
+                    <tr><td style="padding:0 0 4px 24px; font-size:13px; color:#555;">&#8226;&nbsp;<a href="%s" style="color:#ce5886; text-decoration:none;">%s</a></td></tr>
+                    """.formatted(url, safe(s.getName())));
+        }
+        sb.append("<tr><td style=\"padding:0 0 6px 0; font-size:1px; line-height:1px;\">&nbsp;</td></tr>");
         return sb.toString();
     }
 
