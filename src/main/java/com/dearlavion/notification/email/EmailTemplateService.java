@@ -188,14 +188,21 @@ public class EmailTemplateService {
             </table>
 
             <!-- Footer -->
-            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background:#fdf5f8; border-radius:12px;">
+            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
             <tr><td align="center" style="padding:28px 20px 24px;">
                 <p style="margin:0 0 8px 0; font-size:13px; color:#8a8a8a;">
-                    Built with 💛 by <span style="font-weight:700; color:#ce5886;">TravelBesty.ph</span>
+                    Built with 💛 by <a href="%s" style="font-weight:700; color:#ce5886; text-decoration:none;">TravelBesty.ph</a>
                 </p>
                 <p style="margin:0; font-size:12.5px; color:#c98aa2; font-style:italic;">
                     Personalized travel essentials for every trip.
                 </p>
+                <!-- Invisible per-send marker — Gmail hides repeated identical content behind a
+                     "..." toggle for a recipient who's received the same exact HTML block many
+                     times before (this footer text hadn't changed across many test sends today).
+                     Restructuring to <table> didn't stop it, which is itself evidence this is
+                     that repetition-based collapsing, not a markup pattern — this token makes
+                     each send byte-different so Gmail can't fingerprint-match it. -->
+                <span style="font-size:0; line-height:0; color:transparent; display:block; height:0; overflow:hidden;">%s</span>
             </td></tr>
             </table>
 
@@ -209,7 +216,9 @@ public class EmailTemplateService {
                         safe(title),
                         summarySection,
                         itemsHtml,
-                        TRAVEL_BESTY_FRONTEND_URL
+                        TRAVEL_BESTY_FRONTEND_URL,
+                        TRAVEL_BESTY_FRONTEND_URL,
+                        java.util.UUID.randomUUID()
                 );
     }
 
@@ -241,7 +250,7 @@ public class EmailTemplateService {
                     """.formatted(safe(entry.getKey())));
             for (KitEmailRequest.Item item : entry.getValue()) {
                 sb.append("""
-                        <tr><td style="padding:0 0 4px 0; font-size:14px; color:#333;"><span style="font-size:20px; vertical-align:-3px;">&#9744;</span>&nbsp;%s</td></tr>
+                        <tr><td style="padding:0 0 4px 0; font-size:14px; color:#333;"><span style="display:inline-block; width:13px; height:13px; line-height:13px; font-size:1px; overflow:hidden; border:1.5px solid #ce5886; border-radius:3px; vertical-align:-2px;">&nbsp;</span>&nbsp;<strong>%s</strong></td></tr>
                         """.formatted(safe(item.getLabel())));
                 sb.append(buildSuggestionsRows(item.getSuggestions()));
             }
