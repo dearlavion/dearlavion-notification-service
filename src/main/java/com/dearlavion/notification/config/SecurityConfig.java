@@ -39,6 +39,10 @@ public class SecurityConfig {
                         // AUTHENTICATED
                         .requestMatchers("/notification/subscription/**").authenticated()
                         .requestMatchers("/notification/email/**").authenticated()
+                        // Server-to-server only — gated by its own shared-secret header check
+                        // inside NewsletterEmailController, not a user bearer token (there isn't
+                        // one: newsletter subscribe is a public, unauthenticated storefront action).
+                        .requestMatchers("/notification/internal/**").permitAll()
                         // EVERYTHING ELSE
                         .anyRequest().permitAll()
                 )

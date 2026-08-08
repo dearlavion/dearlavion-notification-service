@@ -227,6 +227,63 @@ public class EmailTemplateService {
     // this once the site is actually deployed there.
     private static final String TRAVEL_BESTY_FRONTEND_URL = "https://travelbesty.ph";
 
+    /** Newsletter opt-in thank-you — sent once, only for a genuinely new subscriber (see
+     * NewsletterEmailController). Same table-based layout/brand shell as buildKitEmailTemplate,
+     * just a shorter message with no kit-card section. */
+    public String buildNewsletterThanksTemplate() {
+        return """
+        <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" style="background-color:#f4f6f8; font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+        <tr><td align="center" style="padding:40px 20px;">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="max-width:600px; width:100%%; background:#ffffff; border-radius:14px; box-shadow:0 8px 24px rgba(0,0,0,0.06);">
+        <tr><td style="padding:40px;">
+
+            <p style="font-size:16px; margin:0 0 20px 0;">
+                Hi there,
+            </p>
+
+            <p style="font-size:15px; color:#555; margin-bottom:30px;">
+                Thanks for subscribing to <strong>Travel Besty</strong>! You'll hear from us when we
+                add new packing essentials and travel kit ideas — nothing extra, nothing spammy.
+            </p>
+
+            <!-- CTA -->
+            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
+            <tr><td align="center" style="padding:8px 10px 28px;">
+                <p style="margin:0 0 16px 0; font-size:16px; font-weight:700; color:#2d2d2d;">
+                    Stop forgetting travel essentials.
+                </p>
+                <a href="%s/travel" style="display:inline-block; background:#f2994a; color:#fff; font-size:14px; font-weight:700; text-decoration:none; padding:13px 32px; border-radius:999px;">
+                    Build a Kit
+                </a>
+            </td></tr>
+            </table>
+
+            <!-- Footer -->
+            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0">
+            <tr><td align="center" style="padding:28px 20px 24px;">
+                <p style="margin:0 0 8px 0; font-size:13px; color:#8a8a8a;">
+                    Built with 💛 by <a href="%s" style="font-weight:700; color:#ce5886; text-decoration:none;">TravelBesty.ph</a>
+                </p>
+                <p style="margin:0; font-size:12.5px; color:#c98aa2; font-style:italic;">
+                    Personalized travel essentials for every trip.
+                </p>
+                <!-- Same anti-collapse marker as buildKitEmailTemplate — see that method's comment. -->
+                <span style="font-size:0; line-height:0; color:transparent; display:block; height:0; overflow:hidden;">%s</span>
+            </td></tr>
+            </table>
+
+        </td></tr>
+        </table>
+        </td></tr>
+        </table>
+        """
+                .formatted(
+                        TRAVEL_BESTY_FRONTEND_URL,
+                        TRAVEL_BESTY_FRONTEND_URL,
+                        java.util.UUID.randomUUID()
+                );
+    }
+
     /** Groups items by kitCategory (mirrors my-kit.component.ts's own groupedDisplayItems —
      * items with no category fall under "Other"), rendering each as a checkbox-style row with a
      * bullet list of up to 3 clickable product-suggestion links underneath. */

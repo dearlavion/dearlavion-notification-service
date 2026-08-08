@@ -46,6 +46,12 @@ auth:
   server:
     url: http://dearlavion-authentication-service:8081
 
+# Shared secret checked by NewsletterEmailController against the X-Internal-Api-Key header —
+# store-engine must be configured with the same value (its INTERNAL_API_KEY env var). Defaulted
+# here so local dev works without setting it everywhere; override via env for shared/prod.
+internal:
+  api-key: ${INTERNAL_API_KEY:travelbesty-internal-dev-key}
+
 logging:
   level:
     org.springframework.mail: DEBUG
